@@ -27,6 +27,6 @@ def create_stock_rows(file_name):
     db.commit()
 
 if __name__ == '__main__':
-    # init_stocks_table()
+    init_stocks_table()
     create_stock_rows('stocks1.txt')
     create_stock_rows('stocks2.txt')
