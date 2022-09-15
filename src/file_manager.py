@@ -18,4 +18,7 @@ def get_tickers(file_name):
     f = open(f'./{file_name}')
     tickers = f.readlines()
     f.close()
+    # Removes the newline character from every ticker except the last, which does not have one
+    for i in range(len(tickers) - 1):
+        tickers[i] = tickers[i][0:-1]
     return tickers
