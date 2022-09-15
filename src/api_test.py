@@ -9,7 +9,7 @@ def get_key():
     # The file name should be 'alpaca.secret'
     # The Key ID should be on the first line,
     # Followed by the Secret Key on the second line
-    f = open('../alpaca.secret')
+    f = open('./secrets/alpaca.secret')
     secrets = f.readlines()
     f.close()
     secrets[0] = secrets[0][0:-1]
@@ -22,10 +22,12 @@ stream = Stream(API_KEY, API_SECRET, base_url=BASE_URL, data_feed='iex')
 async def bar_callback(b):
     print(b)
 
-print(alpaca.get_bars('AMZN', '1Week', '2022-06-01', '2022-09-01').df)
+print(alpaca.get_snapshot('AAPL').minute_bar, '\n' , alpaca.get_snapshot('AAPL').daily_bar)
 
-symbol= 'BTCUSD'
-stream.subscribe_crypto_bars(bar_callback, symbol)
-stream.subscribe_crypto_bars(bar_callback, 'ETHUSD')
+# print(alpaca.get_bars('AMZN', '1Week', '2022-06-01', '2022-09-01').df)
 
-stream.run()
+# symbol= 'BTCUSD'
+# stream.subscribe_crypto_bars(bar_callback, symbol)
+# stream.subscribe_crypto_bars(bar_callback, 'ETHUSD')
+
+# stream.run()

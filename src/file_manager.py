@@ -6,7 +6,7 @@ def get_key(file_name):
     # The file name should be {file_name}
     # The Key ID should be on the first line,
     # Followed by the Secret Key on the second line
-    f = open(f'/secrets/{file_name}')
+    f = open(f'./secrets/{file_name}')
     secrets = f.readlines()
     f.close()
     secrets[0] = secrets[0][0:-1]
