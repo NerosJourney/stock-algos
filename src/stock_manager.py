@@ -38,3 +38,12 @@ def sell_stock(account, ticker, quantity):
     curr_bal = get_account_cash(account)
     update_account_cash(account, curr_bal + (quantity * price))
     return True
+
+
+def create_buy_order(account, ticker, quantity):
+    #TODO Implement
+    pass
+
+def create_sell_order(account, ticker, quantity):
+    #TODO Implement
+    pass
