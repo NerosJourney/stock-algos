@@ -16,7 +16,7 @@ def init_stocks_table():
 
 def init_accounts_table():
     cur = db.cursor()
-    create_accouts_table = 'CREATE TABLE Accounts (account_id smallint PRIMARY KEY NOT NULL, name VARCHAR(50), cash DECIMAL(10,2))'
+    create_accouts_table = 'CREATE TABLE Accounts (account_id smallint PRIMARY KEY NOT NULL AUTO_INCREMENT, name VARCHAR(50), cash DECIMAL(10,2))'
     cur.execute(create_accouts_table)
 
 # Creates a row for each ticker in './file_name'
