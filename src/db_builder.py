@@ -21,7 +21,7 @@ def init_accounts_table():
     cur.execute(create_accouts_table)
 
 def init_holdings_table():
-    create_holdings_table = 'CREATE TABLE Holdings (account_id smallint NOT NULL, FOREIGN KEY (account_id) REFERENCES Accounts(account_id), ticker VARCHAR(6) NOT NULL, FOREIGN KEY (ticker) REFERENCES Stocks(ticker), quantity int NOT NULL, avg_price DECIMAL(6,2) NOT NULL)'
+    create_holdings_table = 'CREATE TABLE Holdings (account_id smallint NOT NULL, FOREIGN KEY (account_id) REFERENCES Accounts(account_id), ticker VARCHAR(6) NOT NULL, FOREIGN KEY (ticker) REFERENCES Stocks(ticker), quantity int NOT NULL, avg_price DECIMAL(6,2) NOT NULL, PRIMARY KEY(account_id, ticker))'
     cur.execute(create_holdings_table)
 
 # Creates a row for each ticker in './file_name'
@@ -42,7 +42,7 @@ def create_new_account(account_name, starting_cash):
 
 
 if __name__ == '__main__':
-    # init_holdings_table()
+    init_holdings_table()
     # init_accounts_table()
     # create_new_account("Test", 10_000)
     # init_stocks_table()
