@@ -31,8 +31,17 @@ def create_stock_rows(file_name):
             print(f'Skipping {stock}, as it already exists')
     db.commit()
 
+def create_new_account(account_name, starting_cash):
+    cur = db.cursor()
+    cur.execute(f'INSERT INTO Accounts (name, cash) VALUES ("{account_name}", {starting_cash})')
+    db.commit()
+    return cur.lastrowid
+
+
 if __name__ == '__main__':
-    pass
+    # init_accounts_table()
+    # create_new_account("Test", 10_000)
     # init_stocks_table()
     # create_stock_rows('stocks1.txt')
     # create_stock_rows('stocks2.txt')
+    pass
