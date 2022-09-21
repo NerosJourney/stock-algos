@@ -14,6 +14,11 @@ def init_stocks_table():
     create_stocks_table = 'CREATE TABLE Stocks (ticker VARCHAR(6) PRIMARY KEY NOT NULL, curr_price DECIMAL(6,2), last_open DECIMAL(6,2), last_close DECIMAL(6,2))'
     cur.execute(create_stocks_table)
 
+def init_accounts_table():
+    cur = db.cursor()
+    create_accouts_table = 'CREATE TABLE Accounts (account_id smallint PRIMARY KEY NOT NULL, name VARCHAR(50), cash DECIMAL(10,2))'
+    cur.execute(create_accouts_table)
+
 # Creates a row for each ticker in './file_name'
 # If a row already exists for the ticker, it is skipped
 def create_stock_rows(file_name):
@@ -27,6 +32,7 @@ def create_stock_rows(file_name):
     db.commit()
 
 if __name__ == '__main__':
-    init_stocks_table()
-    create_stock_rows('stocks1.txt')
-    create_stock_rows('stocks2.txt')
+    pass
+    # init_stocks_table()
+    # create_stock_rows('stocks1.txt')
+    # create_stock_rows('stocks2.txt')
