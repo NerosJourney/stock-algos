@@ -1,57 +1,39 @@
 from db_builder import db, cur
-from account_manager import *
-from datetime import datetime
+import alpaca_trade_api as api
+from file_manager import get_tickers, get_key
 
-def buy_stock(account, ticker, quantity):
-    price = get_stock_price(ticker)
+BASE_URL = 'https://paper-api.alpaca.markets'
+API_KEY, API_SECRET = get_key('alpaca.secret')
+alpaca = api.REST(API_KEY, API_SECRET, BASE_URL)
 
-    acc_bal = get_account_cash(account)
-
-    if(quantity * price > acc_bal):
-        print("Not enough money :(")
-        return False
-
-    curr_quantity, curr_avg_price = get_current_holding(account, ticker)
-    new_quantity = curr_quantity + quantity
-
-    total_holdings_price = (curr_quantity * curr_avg_price) + (quantity * price)
-    new_avg = total_holdings_price / new_quantity
-
-    update_current_holding(account, ticker, new_quantity, new_avg)
-    update_account_cash(account, acc_bal - (quantity * price))
-    return True
-
-
-def sell_stock(account, ticker, quantity):
-    curr_quantity, avg = get_current_holding(account, ticker)
-    if(quantity > curr_quantity):
-        print("ERROR! YOU DON'T OWN THAT STOCK")
-        return False
-
-    price = get_stock_price(ticker)
-    
-    new_quantity = curr_quantity - quantity
-    update_current_holding(account, ticker, new_quantity, avg)
-
-    curr_bal = get_account_cash(account)
-    update_account_cash(account, curr_bal + (quantity * price))
-    return True
-
-
-def create_buy_order(account, ticker, quantity):
-    if not buy_stock(account, ticker, quantity):
-        return False
-    price = get_stock_price(ticker)
-    cur.execute(f'INSERT INTO Orders (executed, account_id, ticker, type, quantity, price) VALUES ("{datetime.now()}", {account}, "{ticker}", "BUY", {quantity}, {price})')
+def update_current_price(file_name):
+    tickers = get_tickers(file_name)
+    cur = db.cursor()
+    for x in range(len(tickers)):
+        data = alpaca.get_snapshot(tickers[x]).minute_bar
+        cur.execute(f'UPDATE Stocks SET curr_price = {data.c} WHERE ticker="{tickers[x]}"')
     db.commit()
 
-def create_sell_order(account, ticker, quantity):
-    if not sell_stock(account, ticker, quantity):
-        return False
-    price = get_stock_price(ticker)
-    cur.execute(f'INSERT INTO Orders (executed, account_id, ticker, type, quantity, price) VALUES ("{datetime.now()}", {account}, "{ticker}", "SELL", {quantity}, {price})')
+def update_last_open(file_name):
+    tickers = get_tickers(file_name)
+    cur = db.cursor()
+    for x in range(len(tickers)):
+        data = alpaca.get_snapshot(tickers[x]).daily_bar
+        cur.execute(f'UPDATE Stocks SET last_open = {data.o} WHERE ticker="{tickers[x]}"')
     db.commit()
 
+def update_last_close(file_name):
+    tickers = get_tickers(file_name)
+    cur = db.cursor()
+    for x in range(len(tickers)):
+        data = alpaca.get_snapshot(tickers[x]).prev_daily_bar
+        cur.execute(f'UPDATE Stocks SET last_close = {data.c} WHERE ticker="{tickers[x]}"')
+    db.commit()
+
+def update_all(file_name):
+    update_current_price(file_name)
+    update_last_open(file_name)
+    update_last_close(file_name)
 
 def get_stock_price(ticker):
     cur.execute(f'SELECT curr_price FROM Stocks WHERE ticker="{ticker}"')
@@ -59,4 +41,5 @@ def get_stock_price(ticker):
 
 
 if __name__ == "__main__":
-    create_sell_order(1, 'BAC', 10)
+    update_all("stocks1.txt")
+    update_all("stocks2.txt")

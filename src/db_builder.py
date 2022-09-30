@@ -25,8 +25,12 @@ def init_holdings_table():
     cur.execute(create_holdings_table)
 
 def init_orders_table():
-    create_orders_table = 'CREATE TABLE Orders (executed DATETIME NOT NULL, account_id smallint, FOREIGN KEY (account_id) REFERENCES Accounts(account_id), ticker VARCHAR(6), FOREIGN KEY (ticker) REFERENCES Stocks(ticker), type ENUM ("BUY", "SELL") NOT NULL, quantity int NOT NULL, price DECIMAL(6,2) NOT NULL, PRIMARY KEY(executed, account_id, ticker))'
+    create_orders_table = 'CREATE TABLE Orders (executed DATETIME, account_id smallint, FOREIGN KEY (account_id) REFERENCES Accounts(account_id), ticker VARCHAR(6), FOREIGN KEY (ticker) REFERENCES Stocks(ticker), type ENUM ("BUY", "SELL") NOT NULL, quantity int NOT NULL, price DECIMAL(6,2) NOT NULL, PRIMARY KEY(executed, account_id, ticker))'
     cur.execute(create_orders_table)
+
+def init_account_vals_table():
+    create_account_vals_table = 'CREATE TABLE Account_Values (date_saved DATETIME, account_id SMALLINT, FOREIGN KEY (account_id) REFERENCES Accounts(account_id), value DECIMAL(10,2), PRIMARY KEY(date_saved, account_id))'
+    cur.execute(create_account_vals_table)
 
 # Creates a row for each ticker in './file_name'
 # If a row already exists for the ticker, it is skipped
@@ -41,7 +45,8 @@ def create_stock_rows(file_name):
 
 
 if __name__ == '__main__':
-    init_orders_table()
+    init_account_vals_table()
+    # init_orders_table()
     # init_holdings_table()
     # init_accounts_table()
     # create_new_account("Test", 10_000)
