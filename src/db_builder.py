@@ -24,6 +24,10 @@ def init_holdings_table():
     create_holdings_table = 'CREATE TABLE Holdings (account_id smallint NOT NULL, FOREIGN KEY (account_id) REFERENCES Accounts(account_id), ticker VARCHAR(6) NOT NULL, FOREIGN KEY (ticker) REFERENCES Stocks(ticker), quantity int NOT NULL, avg_price DECIMAL(6,2) NOT NULL, PRIMARY KEY(account_id, ticker))'
     cur.execute(create_holdings_table)
 
+def init_orders_table():
+    create_orders_table = 'CREATE TABLE Orders (executed DATETIME NOT NULL, account_id smallint, FOREIGN KEY (account_id) REFERENCES Accounts(account_id), ticker VARCHAR(6), FOREIGN KEY (ticker) REFERENCES Stocks(ticker), type ENUM ("BUY", "SELL") NOT NULL, quantity int NOT NULL, price DECIMAL(6,2) NOT NULL, PRIMARY KEY(executed, account_id, ticker))'
+    cur.execute(create_orders_table)
+
 # Creates a row for each ticker in './file_name'
 # If a row already exists for the ticker, it is skipped
 def create_stock_rows(file_name):
@@ -35,14 +39,10 @@ def create_stock_rows(file_name):
             print(f'Skipping {stock}, as it already exists')
     db.commit()
 
-def create_new_account(account_name, starting_cash):
-    cur.execute(f'INSERT INTO Accounts (name, cash) VALUES ("{account_name}", {starting_cash})')
-    db.commit()
-    return cur.lastrowid
-
 
 if __name__ == '__main__':
-    init_holdings_table()
+    init_orders_table()
+    # init_holdings_table()
     # init_accounts_table()
     # create_new_account("Test", 10_000)
     # init_stocks_table()

@@ -1,10 +1,9 @@
-from asyncio.windows_events import NULL
 from db_builder import db, cur
 from account_manager import *
+from datetime import datetime
 
 def buy_stock(account, ticker, quantity):
-    cur.execute(f'SELECT curr_price FROM Stocks WHERE ticker="{ticker}"')
-    price = cur.fetchone()[0]
+    price = get_stock_price(ticker)
 
     acc_bal = get_account_cash(account)
 
@@ -29,8 +28,7 @@ def sell_stock(account, ticker, quantity):
         print("ERROR! YOU DON'T OWN THAT STOCK")
         return False
 
-    cur.execute(f'SELECT curr_price FROM Stocks WHERE ticker="{ticker}"')
-    price = cur.fetchone()[0]
+    price = get_stock_price(ticker)
     
     new_quantity = curr_quantity - quantity
     update_current_holding(account, ticker, new_quantity, avg)
@@ -41,9 +39,24 @@ def sell_stock(account, ticker, quantity):
 
 
 def create_buy_order(account, ticker, quantity):
-    #TODO Implement
-    pass
+    if not buy_stock(account, ticker, quantity):
+        return False
+    price = get_stock_price(ticker)
+    cur.execute(f'INSERT INTO Orders (executed, account_id, ticker, type, quantity, price) VALUES ("{datetime.now()}", {account}, "{ticker}", "BUY", {quantity}, {price})')
+    db.commit()
 
 def create_sell_order(account, ticker, quantity):
-    #TODO Implement
-    pass
+    if not sell_stock(account, ticker, quantity):
+        return False
+    price = get_stock_price(ticker)
+    cur.execute(f'INSERT INTO Orders (executed, account_id, ticker, type, quantity, price) VALUES ("{datetime.now()}", {account}, "{ticker}", "SELL", {quantity}, {price})')
+    db.commit()
+
+
+def get_stock_price(ticker):
+    cur.execute(f'SELECT curr_price FROM Stocks WHERE ticker="{ticker}"')
+    return(cur.fetchone()[0])
+
+
+if __name__ == "__main__":
+    create_sell_order(1, 'BAC', 10)

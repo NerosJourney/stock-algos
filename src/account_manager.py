@@ -31,3 +31,8 @@ def get_account_cash(account):
 def update_account_cash(account, cash):
     cur.execute(f'UPDATE Accounts SET cash = {cash} WHERE account_id="{account}"')
     db.commit()
+
+def create_new_account(account_name, starting_cash):
+    cur.execute(f'INSERT INTO Accounts (name, cash) VALUES ("{account_name}", {starting_cash})')
+    db.commit()
+    return cur.lastrowid
