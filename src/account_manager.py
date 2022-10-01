@@ -60,7 +60,7 @@ def buy_stock(account, ticker, quantity):
     acc_bal = get_account_cash(account)
 
     if(quantity * price > acc_bal):
-        print("Not enough money :(")
+        print(f"Not enough money to buy {quantity} shares of {ticker}")
         return False
 
     curr_quantity, curr_avg_price = get_current_holding(account, ticker)
@@ -80,7 +80,7 @@ def buy_stock(account, ticker, quantity):
 def sell_stock(account, ticker, quantity):
     curr_quantity, avg = get_current_holding(account, ticker)
     if(quantity > curr_quantity):
-        print("ERROR! YOU DON'T OWN THAT STOCK")
+        print(f"ERROR! YOU DON'T OWN {quantity} SHARES OF {ticker}")
         return False
 
     price = get_stock_price(ticker)
